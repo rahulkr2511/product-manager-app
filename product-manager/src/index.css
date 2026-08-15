@@ -1,0 +1,63 @@
+:root {
+  --ink: #12161d;
+  --panel: #1b212b;
+  --panel-line: #2a3240;
+  --paper: #ede6d6;
+  --paper-shadow: #d9d0ba;
+  --paper-line: #c9bfa8;
+  --amber: #e3a008;
+  --amber-dark: #b87f05;
+  --green: #4c6b58;
+  --green-dark: #3a5445;
+  --red: #b23a34;
+  --red-dark: #8e2d28;
+  --text-on-paper: #23262b;
+  --text-on-paper-soft: #5b5648;
+  --text-on-dark: #eef0f3;
+  --text-on-dark-soft: #8a93a3;
+
+  --font-display: "Oswald", "Arial Narrow", sans-serif;
+  --font-body: "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", "Courier New", monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--ink);
+  background-image: radial-gradient(
+      circle at 1px 1px,
+      rgba(255, 255, 255, 0.035) 1px,
+      transparent 0
+    ),
+    linear-gradient(180deg, #12161d 0%, #10131a 100%);
+  background-size: 22px 22px, 100% 100%;
+  color: var(--text-on-dark);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font-family: var(--font-body);
+}
+
+:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
