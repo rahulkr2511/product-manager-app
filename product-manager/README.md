@@ -13,29 +13,6 @@ No routing — everything happens on one screen, and all products load in one sh
 
 Running at `http://localhost:8080` (see `src/api.js` to change the base URL):
 
-| Action | Method | Endpoint            |
-|--------|--------|----------------------|
-| List   | GET    | `/products`          |
-| Create | POST   | `/addProduct`        |
-| Update | PUT    | `/updateProduct/:id` |
-| Delete | DELETE | `/deleteProduct/:id` |
-
-Create/update send a JSON body shaped like:
-
-```json
-{
-  "id": 2,
-  "name": "Trail Runner",
-  "description": "Lightweight shoe for uneven terrain",
-  "brand": "Cairn",
-  "price": 4999,
-  "colors": ["Red", "Black"],
-  "release_date": "2026-03-01",
-  "available": true,
-  "quantity": 40,
-  "image": "data:image/png;base64,...."
-}
-```
 
 **Image**: the uploaded file is read client-side and sent as a base64 data URL
 in the `image` field (max 2MB). If your `Product` entity stores `image` as a
@@ -44,8 +21,8 @@ in the `image` field (max 2MB). If your `Product` entity stores `image` as a
 file-upload endpoint later — the form only needs `onImageChange` in
 `ProductFormModal.jsx` adjusted to call it.
 
-If your Spring Boot backend maps `updateProduct` to `POST` instead of `PUT`,
-change the method in `src/api.js` (`updateProduct` function) to match.
+If your Spring Boot backend maps `updateproduct` to `POST` instead of `PUT`,
+change the method in `src/api.js` (`updateproduct` function) to match.
 
 Make sure the backend allows CORS from `http://localhost:5173` (Vite's dev
 port), e.g. with `@CrossOrigin(origins = "http://localhost:5173")` on the
