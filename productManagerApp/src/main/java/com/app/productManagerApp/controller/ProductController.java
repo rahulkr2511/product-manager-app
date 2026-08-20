@@ -70,12 +70,12 @@ public class ProductController {
 
     @PutMapping("product-manager/updateproduct/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable int id, @RequestBody Product updatedProduct) {
-        Product existingProduct = productService.getProductById(id);
-        if (existingProduct == null) {
+        try {
+        Product updated = productService.updateProduct(id, updatedProduct);
+        return ResponseEntity.ok(updated);
+        } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
-        Product updated = productService.updateProduct(id, updatedProduct);
-        return ResponseEntity.ok().body(updated);
     }
 
     @DeleteMapping("product-manager/deleteproduct/{id}")

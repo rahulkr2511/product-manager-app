@@ -31,7 +31,20 @@ public class ProductService {
 
     public Product updateProduct(int id, Product updatedProduct) {
         
-        return productRepo.save(updatedProduct);
+        Product existingProduct = productRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+
+        existingProduct.setName(updatedProduct.getName());
+        existingProduct.setDescription(updatedProduct.getDescription());
+        existingProduct.setPrice(updatedProduct.getPrice());
+        existingProduct.setBrand(updatedProduct.getBrand());
+        existingProduct.setQuantity(updatedProduct.getQuantity());
+        existingProduct.setColors(updatedProduct.getColors());
+        existingProduct.setReleaseDate(updatedProduct.getReleaseDate());
+        existingProduct.setAvailable(updatedProduct.isAvailable());
+
+        // Preserves existing imageData/imageName/imageType automatically
+        return productRepo.save(existingProduct);
     }
 
     public void deleteProduct(int id) {
