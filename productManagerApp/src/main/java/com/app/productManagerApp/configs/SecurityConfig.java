@@ -63,7 +63,8 @@ public class SecurityConfig {
     public AuthenticationProvider authenticationProvider() {
         // Use DaoAuthenticationProvider with custom UserDetailsService and PasswordEncoder
         // since AuthenticationProvider is an interface, we use DaoAuthenticationProvider which is a concrete implementation of it.
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(productManagerUserDetailsService);
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(productManagerUserDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }

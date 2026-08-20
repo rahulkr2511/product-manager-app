@@ -1,5 +1,6 @@
 package com.app.productManagerApp.controller;
 
+import com.app.productManagerApp.service.KafkaService;
 import com.app.productManagerApp.service.ProductService;
 import com.app.productManagerApp.model.Product;
 import java.util.List;
@@ -21,13 +22,17 @@ import org.springframework.web.multipart.MultipartFile;
 @CrossOrigin(origins = "http://localhost:5173")
 public class ProductController {
     private final ProductService productService;
+    private final KafkaService kafkaService;
 
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, KafkaService kafkaService) {
         this.productService = productService;
+        this.kafkaService = kafkaService;
     }
 
     @GetMapping("product-manager/products")
     public ResponseEntity<List<Product>> getProducts() {
+        String message = kafkaService.getMessage();
+        System.out.println("Kafka: " + message);
         return ResponseEntity.ok(productService.getProducts());
     }
 
@@ -44,6 +49,7 @@ public class ProductController {
     @PostMapping("product-manager/addproduct")
     public ResponseEntity<Product> createProduct(@RequestBody Product product) {
         Product savedProduct = productService.createProduct(product);
+        kafkaService.publish(savedProduct);
         return ResponseEntity.status(201).body(savedProduct);
     }
 
