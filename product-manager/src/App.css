@@ -576,6 +576,12 @@
   padding-left: 6px;
 }
 
+.input-prefix input:focus {
+  border-color: transparent;
+  outline: none;
+  box-shadow: none;
+}
+
 .field-hint {
   font-family: var(--font-mono);
   font-size: 11px;
