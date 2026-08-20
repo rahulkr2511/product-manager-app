@@ -2,8 +2,13 @@ package com.app.productManagerApp.configs;
 
 import java.time.Duration;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CachingConfigurer;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.interceptor.CacheErrorHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
@@ -22,7 +27,9 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 @Configuration
 @EnableCaching
-public class RedisConfig {
+public class RedisConfig implements CachingConfigurer {
+
+    private static final Logger log = LoggerFactory.getLogger(RedisConfig.class);
 
     @Bean
     public CacheManager cacheManager(RedisConnectionFactory factory) {
@@ -64,5 +71,31 @@ public class RedisConfig {
         return RedisCacheManager.builder(factory)
                 .cacheDefaults(config)
                 .build();
+    }
+
+    // Intercepts Redis runtime errors and falls back to database execution
+    @Override
+    public CacheErrorHandler errorHandler() {
+        return new CacheErrorHandler() {
+            @Override
+            public void handleCacheGetError(RuntimeException exception, Cache cache, Object key) {
+                log.warn("Redis unavailable for GET on cache '{}' with key '{}'. Falling back to database.", cache.getName(), key);
+            }
+
+            @Override
+            public void handleCachePutError(RuntimeException exception, Cache cache, Object key, Object value) {
+                log.warn("Redis unavailable for PUT on cache '{}' with key '{}'. Proceeding without caching.", cache.getName(), key);
+            }
+
+            @Override
+            public void handleCacheEvictError(RuntimeException exception, Cache cache, Object key) {
+                log.warn("Redis unavailable for EVICT on cache '{}' with key '{}'. Proceeding without evicting.", cache.getName(), key);
+            }
+
+            @Override
+            public void handleCacheClearError(RuntimeException exception, Cache cache) {
+                log.warn("Redis unavailable for CLEAR on cache '{}'. Proceeding without clearing.", cache.getName());
+            }
+        };
     }
 }
