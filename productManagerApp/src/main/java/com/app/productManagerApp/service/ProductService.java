@@ -3,6 +3,10 @@ package com.app.productManagerApp.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,7 +19,8 @@ public class ProductService {
 
     @Autowired
     ProductRepo productRepo;
-
+    
+    @Cacheable(value = "products", key = "'all'")
     public List<Product> getProducts() {
         return productRepo.findAll();
     }
@@ -24,11 +29,14 @@ public class ProductService {
         return productRepo.findById(id).orElse(null);
     }
 
+    @CacheEvict(value = "products", key = "'all'")
+    @CachePut(value = "product", key = "#result.id")
     public Product createProduct(Product product) {
         return productRepo.save(product);
     }
     
-
+    @CacheEvict(value = "products", key = "'all'")
+    @CachePut(value = "product", key = "#id")
     public Product updateProduct(int id, Product updatedProduct) {
         
         Product existingProduct = productRepo.findById(id)
@@ -47,11 +55,19 @@ public class ProductService {
         return productRepo.save(existingProduct);
     }
 
+    @Caching(evict = {
+        @CacheEvict(value = "products", key = "'all'"),
+        @CacheEvict(value = "product", key = "#id")
+    })    
     public void deleteProduct(int id) {
         productRepo.deleteById(id);
     }
 
     @Transactional
+    @Caching(evict = {
+        @CacheEvict(value = "products", key = "'all'"),
+        @CacheEvict(value = "product", key = "#id")
+    })
     public Product uploadImage(int id, MultipartFile imageFile) throws Exception {
         
         // 1. Guard against empty files

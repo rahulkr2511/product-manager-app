@@ -5,6 +5,7 @@ import com.app.productManagerApp.service.ProductService;
 import com.app.productManagerApp.model.Product;
 import java.util.List;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -36,6 +37,7 @@ public class ProductController {
         return ResponseEntity.ok(productService.getProducts());
     }
 
+    @Cacheable(value = "product", key = "#id")
     @GetMapping("product-manager/products/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable int id) {
         Product product = productService.getProductById(id);
